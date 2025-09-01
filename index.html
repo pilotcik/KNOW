@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sardor's - Personal Development App</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌎</text></svg>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --warning: #f9c74f;
+            --light: #f8f9fa;
+            --dark: #121212;
+            --gray: #6c757d;
+            --green: #06d6a0;
+            --coral: #ff6b6b;
+            --purple: #7209b7;
+            --yellow: #ffd166;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--green), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--green);
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--light);
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .menu-btn {
+            display: none;
+            background: var(--primary);
+            border: none;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            nav {
+                display: none;
+                position: absolute;
+                top: 80px;
+                left: 0;
+                right: 0;
+                background: rgba(0, 0, 0, 0.9);
+                flex-direction: column;
+                padding: 20px;
+                z-index: 100;
+            }
+            
+            nav.show {
+                display: flex;
+            }
+            
+            .menu-btn {
+                display: block;
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .card h2 {
+            color: var(--green);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card h2 i {
+            font-size: 1.5rem;
+        }
+
+        .quote-container {
+            background: linear-gradient(to right, var(--purple), var(--primary));
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .quote-container i {
+            font-size: 2rem;
+            color: var(--yellow);
+            margin-bottom: 10px;
+        }
+
+        .quote-text {
+            font-style: italic;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .quote-author {
+            font-weight: 600;
+            color: var(--yellow);
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .task-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .task-item span {
+            flex: 1;
+        }
+
+        .task-item.completed span {
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .task-item .priority {
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .priority.high {
+            background: var(--coral);
+        }
+
+        .priority.medium {
+            background: var(--warning);
+            color: var(--dark);
+        }
+
+        .priority.low {
+            background: var(--success);
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #b5174b;
+        }
+
+        .btn-sm {
+            padding: 5px 10px;
+            font-size: 0.9rem;
+        }
+
+        textarea, input[type="text"], input[type="date"], input[type="time"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            margin-bottom: 10px;
+            resize: vertical;
+        }
+
+        textarea:focus, input[type="text"]:focus, input[type="date"]:focus, input[type="time"]:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .habit-tracker {
+            margin-top: 20px;
+        }
+
+        .habit-area {
+            margin-bottom: 15px;
+        }
+
+        .habit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .habit-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 5px;
+            transition: width 0.3s ease;
+        }
+
+        .news-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 600px) {
+            .news-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .news-source {
+            margin-bottom: 15px;
+        }
+
+        .news-item {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .news-item h3 {
+            color: var(--green);
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+
+        .news-item p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .ai-container {
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .ai-message {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 10px 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .user-message {
+            text-align: right;
+            background: rgba(67, 97, 238, 0.3);
+        }
+
+        .ai-response {
+            text-align: left;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .language-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--light);
+            padding: 5px 10px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .language-btn.active {
+            background: var(--primary);
+        }
+
+        .reminder-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reminder-time {
+            font-weight: 600;
+            color: var(--yellow);
+        }
+
+        .reminder-text {
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--dark);
+            padding: 20px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-globe"></i>
+                <h1>KNOW!</h1>
+            </div>
+            <nav id="main-nav">
+                <button class="nav-btn active" data-section="dashboard"><i class="fas fa-home"></i> Home</button>
+                <button class="nav-btn" data-section="tasks"><i class="fas fa-tasks"></i> Tasks</button>
+                <button class="nav-btn" data-section="diary"><i class="fas fa-book"></i> Diary</button>
+                <button class="nav-btn" data-section="habits"><i class="fas fa-fire"></i> Habits</button>
+                <button class="nav-btn" data-section="news"><i class="fas fa-newspaper"></i> News</button>
+                <button class="nav-btn" data-section="ai"><i class="fas fa-robot"></i> AI Assistant</button>
+                <button class="nav-btn" data-section="reminders"><i class="fas fa-bell"></i> Reminders</button>
+            </nav>
+            <button class="menu-btn" id="menu-toggle"><i class="fas fa-bars"></i> Menu</button>
+            <div class="language-selector">
+                <button class="language-btn active" data-lang="en">EN</button>
+                <button class="language-btn" data-lang="ru">RU</button>
+                
+                <button class="language-btn" data-lang="uz">UZ</button>
+                
+            </div>
+        </header>
+
+        <div class="quote-container">
+            <i class="fas fa-quote-left"></i>
+            <p class="quote-text" id="daily-quote">The only way to do great work is to love what you do.</p>
+            <p class="quote-author" id="quote-author">- Steve Jobs</p>
+        </div>
+
+        <div class="main-content">
+            <div class="column">
+                <div class="card" id="tasks-card">
+                    <h2><i class="fas fa-tasks"></i> Today's Tasks</h2>
+                    <div id="tasks-list">
+                        <div class="task-item">
+                            <input type="checkbox">
+                            <span>Morning meditation</span>
+                            <span class="priority high">High</span>
+                            <button class="btn btn-sm btn-accent"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="task-item completed">
+                            <input type="checkbox" checked>
+                            <span>Review weekly goals</span>
+                            <span class="priority medium">Medium</span>
+                            <button class="btn btn-sm btn-accent"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="task-item">
+                            <input type="checkbox">
+                            <span>30-minute workout</span>
+                            <span class="priority high">High</span>
+                            <button class="btn btn-sm btn-accent"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <button class="btn" id="add-task-btn"><i class="fas fa-plus"></i> Add Task</button>
+                </div>
+
+                <div class="card" id="diary-card">
+                    <h2><i class="fas fa-book"></i> Daily Journal</h2>
+                    <div id="journal-entries">
+                        <div class="task-item">
+                            <span>September 27, 2023</span>
+                            <button class="btn btn-sm btn-accent"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="task-item">
+                            <span>September 26, 2023</span>
+                            <button class="btn btn-sm btn-accent"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <textarea rows="5" placeholder="What's on your mind today?" id="journal-text"></textarea>
+                    <button class="btn" id="save-journal-btn"><i class="fas fa-save"></i> Save Entry</button>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-bell"></i> Reminders</h2>
+                    <div id="reminders-list">
+                        <div class="reminder-item">
+                            <div class="reminder-time">10:00 AM</div>
+                            <div class="reminder-text">Team meeting</div>
+                            <button class="btn btn-sm btn-accent"><i class="fas fa-trash"></i></button>
+                        </div>
+                        <div class="reminder-item">
+                            <div class="reminder-time">3:30 PM</div>
+                            <div class="reminder-text">Gym session</div>
+                            <button class="btn btn-sm btn-accent"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>
+                    <button class="btn" id="add-reminder-btn"><i class="fas fa-plus"></i> Add Reminder</button>
+                </div>
+            </div>
+
+            <div class="column">
+                <div class="card">
+                    <h2><i class="fas fa-newspaper"></i> News Feed</h2>
+                    <div class="news-container">
+                        <div class="news-source">
+                            <h3>Kun.uz</h3>
+                            <div class="news-item">
+                                <h3>O'zbekistonda yangi iqtisodiy islohotlar</h3>
+                                <p>President yangi iqtisodiy islohotlar haqida gapirdi...</p>
+                            </div>
+                            <div class="news-item">
+                                <h3>Toshkentda yangi metro liniyasi ochildi</h3>
+                                <p>Yangi metro liniyasi shaharning sharqiy qismiga xizmat ko'rsatadi...</p>
+                            </div>
+                        </div>
+                        <div class="news-source">
+                            <h3>BBC News</h3>
+                            <div class="news-item">
+                                <h3>Global climate summit reaches agreement</h3>
+                                <p>World leaders have agreed on new measures to combat climate change...</p>
+                            </div>
+                            <div class="news-item">
+                                <h3>Tech giant unveils new smartphone</h3>
+                                <p>The latest smartphone features breakthrough camera technology...</p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn" id="refresh-news-btn"><i class="fas fa-sync"></i> Refresh News</button>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-fire"></i> Habit Tracker</h2>
+                    <div class="habit-tracker">
+                        <div class="habit-area">
+                            <div class="habit-header">
+                                <span>Sports & Fitness</span>
+                                <div class="habit-controls">
+                                    <button class="btn btn-sm btn-accent"><i class="fas fa-minus"></i></button>
+                                    <span>65%</span>
+                                    <button class="btn btn-sm"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 65%;"></div>
+                            </div>
+                        </div>
+                        <div class="habit-area">
+                            <div class="habit-header">
+                                <span>IT Skills</span>
+                                <div class="habit-controls">
+                                    <button class="btn btn-sm btn-accent"><i class="fas fa-minus"></i></button>
+                                    <span>80%</span>
+                                    <button class="btn btn-sm"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%;"></div>
+                            </div>
+                        </div>
+                        <div class="habit-area">
+                            <div class="habit-header">
+                                <span>Language Learning</span>
+                                <div class="habit-controls">
+                                    <button class="btn btn-sm btn-accent"><i class="fas fa-minus"></i></button>
+                                    <span>45%</span>
+                                    <button class="btn btn-sm"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 45%;"></div>
+                            </div>
+                        </div>
+                        <div class="habit-area">
+                            <div class="habit-header">
+                                <span>Reading</span>
+                                <div class="habit-controls">
+                                    <button class="btn btn-sm btn-accent"><i class="fas fa-minus"></i></button>
+                                    <span>70%</span>
+                                    <button class="btn btn-sm"><i class="fas fa-plus"></i></button>
+                                </div>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 70%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-robot"></i> AI Assistant</h2>
+                    <div class="ai-container">
+                        <div class="ai-message ai-response">
+                            Hello! I'm your personal development assistant. How can I help you today?
+                        </div>
+                        <div class="ai-message user-message">
+                            Can you give me a productivity tip?
+                        </div>
+                        <div class="ai-message ai-response">
+                            Try the Pomodoro technique: Work for 25 minutes, then take a 5-minute break. After four cycles, take a longer break. This helps maintain focus and prevents burnout.
+                        </div>
+                        <input type="text" placeholder="Ask something..." id="ai-input">
+                        <button class="btn btn-accent" id="ai-send-btn"><i class="fas fa-paper-plane"></i> Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Sardor's Personal development app 📈&copy; 2025 </p>
+            <p>Works offline✅ • EDUCATIONAL💡• Secure🔒</p>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="task-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Task</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <input type="text" placeholder="Task title" id="task-title">
+            <select id="task-priority">
+                <option value="low">Low Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="high">High Priority</option>
+            </select>
+            <button class="btn" id="save-task-btn">Save Task</button>
+        </div>
+    </div>
+
+    <div class="modal" id="reminder-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Reminder</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <input type="text" placeholder="Reminder text" id="reminder-text">
+            <input type="time" id="reminder-time">
+            <button class="btn" id="save-reminder-btn">Save Reminder</button>
+        </div>
+    </div>
+
+    <script>
+        // Data storage
+        let tasks = [];
+        let journalEntries = [];
+        let reminders = [];
+        let currentLanguage = 'en';
+        
+        // DOM Elements
+        const menuToggle = document.getElementById('menu-toggle');
+        const mainNav = document.getElementById('main-nav');
+        const taskModal = document.getElementById('task-modal');
+        const reminderModal = document.getElementById('reminder-modal');
+        
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            initEventListeners();
+            setDailyQuote();
+        });
+        
+        // Set up event listeners
+        function initEventListeners() {
+            // Menu toggle for mobile
+            menuToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('show');
+            });
+            
+            // Navigation buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // For demonstration, just scroll to the section
+                    const section = this.dataset.section;
+                    document.getElementById(`${section}-card`)?.scrollIntoView({behavior: 'smooth'});
+                    
+                    // Close menu on mobile after selection
+                    if (window.innerWidth <= 768) {
+                        mainNav.classList.remove('show');
+                    }
+                });
+            });
+            
+            // Language selector
+            document.querySelectorAll('.language-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.language-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentLanguage = this.dataset.lang;
+                    // In a real app, you would update all text content based on the selected language
+                    alert(`Language changed to ${getLanguageName(currentLanguage)}`);
+                });
+            });
+            
+            // Task functionality
+            document.getElementById('add-task-btn').addEventListener('click', () => {
+                taskModal.classList.add('show');
+            });
+            
+            document.querySelectorAll('.task-item input[type="checkbox"]').forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    this.parentElement.classList.toggle('completed');
+                });
+            });
+            
+            document.querySelectorAll('.task-item .btn-accent').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    this.closest('.task-item').remove();
+                });
+            });
+            
+            // Journal functionality
+            document.getElementById('save-journal-btn').addEventListener('click', () => {
+                const text = document.getElementById('journal-text').value;
+                if (text) {
+                    const date = new Date().toLocaleDateString();
+                    journalEntries.push({ date, text });
+                    updateJournalUI();
+                    document.getElementById('journal-text').value = '';
+                    alert('Journal entry saved!');
+                }
+            });
+            
+            // Reminder functionality
+            document.getElementById('add-reminder-btn').addEventListener('click', () => {
+                reminderModal.classList.add('show');
+            });
+            
+            // AI Assistant functionality
+            document.getElementById('ai-send-btn').addEventListener('click', processAIQuery);
+            
+            // Close modals
+            document.querySelectorAll('.close-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    taskModal.classList.remove('show');
+                    reminderModal.classList.remove('show');
+                });
+            });
+            
+            // Habit tracker controls
+            document.querySelectorAll('.habit-controls .btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const controls = this.closest('.habit-controls');
+                    const valueElement = controls.querySelector('span');
+                    let value = parseInt(valueElement.textContent);
+                    
+                    if (this.querySelector('.fa-plus')) {
+                        value = Math.min(100, value + 5);
+                    } else {
+                        value = Math.max(0, value - 5);
+                    }
+                    
+                    valueElement.textContent = `${value}%`;
+                    controls.previousElementSibling.textContent = `${value}%`;
+                    
+                    const progressBar = controls.closest('.habit-area').querySelector('.progress-fill');
+                    progressBar.style.width = `${value}%`;
+                });
+            });
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            // In a real app, you would load from localStorage or a database
+            tasks = [
+                { id: 1, title: 'Morning meditation', completed: false, priority: 'high' },
+                { id: 2, title: 'Review weekly goals', completed: true, priority: 'medium' },
+                { id: 3, title: '30-minute workout', completed: false, priority: 'high' }
+            ];
+            
+            journalEntries = [
+                { date: 'September 27, 2023', text: 'Had a productive day working on the new project.' },
+                { date: 'September 26, 2023', text: 'Started reading a new book about mindfulness.' }
+            ];
+            
+            reminders = [
+                { time: '10:00 AM', text: 'Team meeting' },
+                { time: '3:30 PM', text: 'Gym session' }
+            ];
+            
+            updateUI();
+        }
+        
+        // Update UI with current data
+        function updateUI() {
+            updateJournalUI();
+            // Additional UI updates would go here
+        }
+        
+        // Update journal entries list
+        function updateJournalUI() {
+            const entriesContainer = document.getElementById('journal-entries');
+            entriesContainer.innerHTML = '';
+            
+            journalEntries.forEach(entry => {
+                const entryEl = document.createElement('div');
+                entryEl.className = 'task-item';
+                entryEl.innerHTML = `
+                    <span>${entry.date}</span>
+                    <button class="btn btn-sm btn-accent"><i class="fas fa-trash"></i></button>
+                `;
+                
+                // Add delete functionality
+                entryEl.querySelector('.btn-accent').addEventListener('click', function() {
+                    const index = journalEntries.findIndex(e => e.date === entry.date);
+                    if (index !== -1) {
+                        journalEntries.splice(index, 1);
+                        updateJournalUI();
+                    }
+                });
+                
+                entriesContainer.appendChild(entryEl);
+            });
+        }
+        
+        // Set a daily motivational quote
+        function setDailyQuote() {
+            const quotes = [
+                {
+                    text: "The only way to do great work is to love what you do.",
+                    author: "Steve Jobs"
+                },
+                {
+                    text: "Your time is limited, so don't waste it living someone else's life.",
+                    author: "Steve Jobs"
+                },
+                {
+                    text: "The greatest glory in living lies not in never falling, but in rising every time we fall.",
+                    author: "Nelson Mandela"
+                },
+                {
+                    text: "The way to get started is to quit talking and begin doing.",
+                    author: "Walt Disney"
+                },
+                {
+                    text: "If life were predictable it would cease to be life, and be without flavor.",
+                    author: "Eleanor Roosevelt"
+                }
+            ];
+            
+            // Get a "daily" quote based on the day of the year
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            const quote = quotes[dayOfYear % quotes.length];
+            
+            document.getElementById('daily-quote').textContent = quote.text;
+            document.getElementById('quote-author').textContent = `- ${quote.author}`;
+        }
+        
+        // Process AI queries
+        function processAIQuery() {
+            const input = document.getElementById('ai-input');
+            const query = input.value.trim();
+            
+            if (!query) return;
+            
+            // Add user message to chat
+            addAIMessage(query, 'user');
+            
+            // Process query and generate response
+            let response = "I'm not sure how to help with that. Can you try asking something else?";
+            
+            if (query.toLowerCase().includes('productivity')) {
+                response = "For productivity, try time blocking: schedule specific time slots for different tasks throughout your day. This helps maintain focus and reduces context switching.";
+            } else if (query.toLowerCase().includes('motivation')) {
+                response = "When motivation is low, try the 5-minute rule: commit to working on a task for just 5 minutes. Often, getting started is the hardest part, and you'll find it easier to continue once you've begun.";
+            } else if (query.toLowerCase().includes('habit')) {
+                response = "Building habits takes consistency. Start small with a habit that takes less than 2 minutes to complete. Track your progress and celebrate small wins to stay motivated.";
+            } else if (query.toLowerCase().includes('learn')) {
+                response = "For effective learning, try the Feynman Technique: 1) Choose a concept to learn, 2) Teach it to someone else (or pretend to), 3) Identify gaps in your understanding, 4) Review and simplify your explanation.";
+            }
+            
+            // Simulate AI thinking delay
+            setTimeout(() => {
+                addAIMessage(response, 'ai');
+                input.value = '';
+            }, 1000);
+        }
+        
+        // Add message to AI chat
+        function addAIMessage(text, type) {
+            const aiContainer = document.querySelector('.ai-container');
+            const messageEl = document.createElement('div');
+            messageEl.className = `ai-message ${type === 'user' ? 'user-message' : 'ai-response'}`;
+            messageEl.textContent = text;
+            
+            aiContainer.insertBefore(messageEl, aiContainer.children[aiContainer.children.length - 2]);
+            messageEl.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Get language name from code
+        function getLanguageName(code) {
+            const languages = {
+                'en': 'English',
+                'ru': 'Russian',
+                'tr': 'Turkish',
+                'uz': 'Uzbek',
+                'de': 'German'
+            };
+            
+            return languages[code] || 'Unknown';
+        }
+    </script>
+</body>
+</html>
